@@ -71,7 +71,7 @@ watch(
 )
 
 const queryErrorMessage = computed(() => {
-  const err = modelsStore.modelsQuery.error.value
+  const err = modelsStore.modelsQuery.error?.value
   if (!err) return ''
   if (err instanceof Error) return err.message
   return String(err)
@@ -132,78 +132,78 @@ const formatCurrency = (value: number | null) => {
 
           <div class="table-wrapper">
             <div class="table">
-            <div class="table-header">
-              <div class="cell provider">Provider</div>
-              <div class="cell id">Model ID</div>
-              <div class="cell name">Name</div>
-              <div class="cell capabilities">Capabilities</div>
-              <div class="cell limits">Limits</div>
-              <div class="cell cost">Cost</div>
-              <div class="cell modalities">Modalities</div>
-            </div>
+              <div class="table-header">
+                <div class="cell provider">Provider</div>
+                <div class="cell id">Model ID</div>
+                <div class="cell name">Name</div>
+                <div class="cell capabilities">Capabilities</div>
+                <div class="cell limits">Limits</div>
+                <div class="cell cost">Cost</div>
+                <div class="cell modalities">Modalities</div>
+              </div>
 
-            <div ref="scrollContainer" class="table-body" role="presentation" @scroll="handleScroll">
-              <div class="virtual-list-container" :style="{ height: `${totalHeight}px` }">
-                <div class="virtual-list" :style="{ transform: `translateY(${translateY}px)` }">
-                  <article v-for="model in visibleModels" :key="`${model.providerId}-${model.modelId}`"
-                    class="table-row">
-                    <div class="cell provider">
-                      <div class="provider-name">{{ model.providerDisplayName }}</div>
-                      <code class="provider-id">{{ model.providerId }}</code>
-                    </div>
-                    <div class="cell id">
-                      <code>{{ model.modelId }}</code>
-                    </div>
-                    <div class="cell name">
-                      <div class="model-name">{{ model.modelDisplayName }}</div>
-                      <div class="muted">{{ model.modelName }}</div>
-                    </div>
-                    <div class="cell capabilities icons">
-                      <span v-if="model.capabilities.reasoning" class="icon-chip" title="Reasoning">
-                        <Icon icon="mdi:brain" width="18" />
-                      </span>
-                      <span v-if="model.capabilities.toolCall" class="icon-chip" title="Tool call">
-                        <Icon icon="mdi:tools" width="18" />
-                      </span>
-                      <span v-if="model.capabilities.attachment" class="icon-chip" title="Attachments">
-                        <Icon icon="mdi:paperclip" width="18" />
-                      </span>
-                      <span v-if="model.capabilities.temperature" class="icon-chip" title="Sampling">
-                        <Icon icon="mdi:thermometer" width="18" />
-                      </span>
-                      <span v-if="model.capabilities.multimodal" class="icon-chip" title="Images">
-                        <Icon icon="mdi:image-multiple" width="18" />
-                      </span>
-                      <span v-if="!Object.values(model.capabilities).some(Boolean)" class="muted">—</span>
-                    </div>
-                    <div class="cell limits">
-                      <div>Context: {{ formatNumber(model.limits.context) }}</div>
-                      <div>Output: {{ formatNumber(model.limits.output) }}</div>
-                    </div>
-                    <div class="cell cost">
-                      <div>Input: {{ formatCurrency(model.cost.input) }}</div>
-                      <div>Output: {{ formatCurrency(model.cost.output) }}</div>
-                    </div>
-                    <div class="cell modalities">
-                      <div class="tag-group">
-                        <span class="tag" v-for="input in model.modalities.input" :key="`in-${input}`">
-                          IN: {{ input }}
-                        </span>
-                        <span class="tag subtle" v-for="output in model.modalities.output" :key="`out-${output}`">
-                          OUT: {{ output }}
-                        </span>
-                        <span v-if="!model.modalities.input.length && !model.modalities.output.length">
-                          —
-                        </span>
+              <div ref="scrollContainer" class="table-body" role="presentation" @scroll="handleScroll">
+                <div class="virtual-list-container" :style="{ height: `${totalHeight}px` }">
+                  <div class="virtual-list" :style="{ transform: `translateY(${translateY}px)` }">
+                    <article v-for="model in visibleModels" :key="`${model.providerId}-${model.modelId}`"
+                      class="table-row">
+                      <div class="cell provider">
+                        <div class="provider-name">{{ model.providerDisplayName }}</div>
+                        <code class="provider-id">{{ model.providerId }}</code>
                       </div>
-                    </div>
-                  </article>
+                      <div class="cell id">
+                        <code>{{ model.modelId }}</code>
+                      </div>
+                      <div class="cell name">
+                        <div class="model-name">{{ model.modelDisplayName }}</div>
+                        <div class="muted">{{ model.modelName }}</div>
+                      </div>
+                      <div class="cell capabilities icons">
+                        <span v-if="model.capabilities.reasoning" class="icon-chip" title="Reasoning">
+                          <Icon icon="mdi:brain" width="18" />
+                        </span>
+                        <span v-if="model.capabilities.toolCall" class="icon-chip" title="Tool call">
+                          <Icon icon="mdi:tools" width="18" />
+                        </span>
+                        <span v-if="model.capabilities.attachment" class="icon-chip" title="Attachments">
+                          <Icon icon="mdi:paperclip" width="18" />
+                        </span>
+                        <span v-if="model.capabilities.temperature" class="icon-chip" title="Sampling">
+                          <Icon icon="mdi:thermometer" width="18" />
+                        </span>
+                        <span v-if="model.capabilities.multimodal" class="icon-chip" title="Images">
+                          <Icon icon="mdi:image-multiple" width="18" />
+                        </span>
+                        <span v-if="!Object.values(model.capabilities).some(Boolean)" class="muted">—</span>
+                      </div>
+                      <div class="cell limits">
+                        <div>Context: {{ formatNumber(model.limits.context) }}</div>
+                        <div>Output: {{ formatNumber(model.limits.output) }}</div>
+                      </div>
+                      <div class="cell cost">
+                        <div>Input: {{ formatCurrency(model.cost.input) }}</div>
+                        <div>Output: {{ formatCurrency(model.cost.output) }}</div>
+                      </div>
+                      <div class="cell modalities">
+                        <div class="tag-group">
+                          <span class="tag" v-for="input in model.modalities.input" :key="`in-${input}`">
+                            IN: {{ input }}
+                          </span>
+                          <span class="tag subtle" v-for="output in model.modalities.output" :key="`out-${output}`">
+                            OUT: {{ output }}
+                          </span>
+                          <span v-if="!model.modalities.input.length && !model.modalities.output.length">
+                            —
+                          </span>
+                        </div>
+                      </div>
+                    </article>
+                  </div>
+                </div>
+                <div v-if="!modelsStore.modelsQuery.isPending && !filteredModels.length" class="empty">
+                  No models match this search. Try a different id or name.
                 </div>
               </div>
-              <div v-if="!modelsStore.modelsQuery.isPending && !filteredModels.length" class="empty">
-                No models match this search. Try a different id or name.
-              </div>
-            </div>
             </div>
           </div>
         </section>
