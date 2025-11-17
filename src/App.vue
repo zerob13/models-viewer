@@ -17,7 +17,7 @@ const buffer = 6
 const totalHeight = computed(() => filteredModels.value.length * rowHeight)
 const startIndex = computed(() => Math.max(Math.floor(scrollTop.value / rowHeight) - buffer, 0))
 const visibleCount = computed(() => Math.ceil(viewportHeight.value / rowHeight) + buffer * 2)
-const endIndex = computed(() => Math.min(startIndex.value + visibleCount, filteredModels.value.length))
+const endIndex = computed(() => Math.min(startIndex.value + visibleCount.value, filteredModels.value.length))
 const visibleModels = computed(() => filteredModels.value.slice(startIndex.value, endIndex.value))
 const translateY = computed(() => startIndex.value * rowHeight)
 
@@ -93,19 +93,11 @@ const formatCurrency = (value: number | null) => {
     <header class="title-bar hero-bar">
       <div class="title-bar-text">Models Viewer</div>
       <div class="search-box">
-        <input
-          v-model="searchTerm"
-          type="search"
-          class="search-input"
-          placeholder="Search by model id or model name..."
-        />
+        <input v-model="searchTerm" type="search" class="search-input"
+          placeholder="Search by model id or model name..." />
       </div>
       <div class="bar-actions">
-        <select
-          v-model="selectedProviderId"
-          class="provider-select"
-          aria-label="Filter by provider"
-        >
+        <select v-model="selectedProviderId" class="provider-select" aria-label="Filter by provider">
           <option value="all">All providers</option>
           <option v-for="provider in providers" :key="provider.id" :value="provider.id">
             {{ provider.name }}
@@ -151,19 +143,11 @@ const formatCurrency = (value: number | null) => {
               <div class="cell modalities">Modalities</div>
             </div>
 
-            <div
-              ref="scrollContainer"
-              class="table-body"
-              role="presentation"
-              @scroll="handleScroll"
-            >
-              <div :style="{ height: `${totalHeight}px` }">
+            <div ref="scrollContainer" class="table-body" role="presentation" @scroll="handleScroll">
+              <div class="virtual-list-container" :style="{ height: `${totalHeight}px` }">
                 <div class="virtual-list" :style="{ transform: `translateY(${translateY}px)` }">
-                  <article
-                    v-for="model in visibleModels"
-                    :key="`${model.providerId}-${model.modelId}`"
-                    class="table-row"
-                  >
+                  <article v-for="model in visibleModels" :key="`${model.providerId}-${model.modelId}`"
+                    class="table-row">
                     <div class="cell provider">
                       <div class="provider-name">{{ model.providerDisplayName }}</div>
                       <code class="provider-id">{{ model.providerId }}</code>
@@ -191,9 +175,7 @@ const formatCurrency = (value: number | null) => {
                       <span v-if="model.capabilities.multimodal" class="icon-chip" title="Images">
                         <Icon icon="mdi:image-multiple" width="18" />
                       </span>
-                      <span v-if="!Object.values(model.capabilities).some(Boolean)" class="muted"
-                        >—</span
-                      >
+                      <span v-if="!Object.values(model.capabilities).some(Boolean)" class="muted">—</span>
                     </div>
                     <div class="cell limits">
                       <div>Context: {{ formatNumber(model.limits.context) }}</div>
@@ -208,11 +190,7 @@ const formatCurrency = (value: number | null) => {
                         <span class="tag" v-for="input in model.modalities.input" :key="`in-${input}`">
                           IN: {{ input }}
                         </span>
-                        <span
-                          class="tag subtle"
-                          v-for="output in model.modalities.output"
-                          :key="`out-${output}`"
-                        >
+                        <span class="tag subtle" v-for="output in model.modalities.output" :key="`out-${output}`">
                           OUT: {{ output }}
                         </span>
                         <span v-if="!model.modalities.input.length && !model.modalities.output.length">
@@ -246,11 +224,20 @@ const formatCurrency = (value: number | null) => {
 }
 
 .hero-bar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
   display: grid;
-  grid-template-columns: 160px 1fr 220px;
-  gap: 12px;
+  grid-template-columns: 180px 1fr 240px;
+  gap: 14px;
   align-items: center;
-  padding: 10px 12px;
+  padding: 18px 20px;
+  min-height: 90px;
+  background: var(--window-bg);
+  border: 1px solid var(--border-strong);
+  box-shadow:
+    inset 0 1px 0 #fff,
+    0 6px 12px rgba(0, 0, 0, 0.12);
 }
 
 .search-box {
@@ -286,6 +273,8 @@ const formatCurrency = (value: number | null) => {
 
 .main-window {
   width: 100%;
+  display: flex;
+  flex-direction: column;
   background: var(--window-bg);
   border: 1px solid var(--border-strong);
   box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.12);
@@ -298,8 +287,12 @@ const formatCurrency = (value: number | null) => {
 }
 
 .window-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
   background: var(--window-bg);
   color: var(--app-text);
+  overflow: hidden;
 }
 
 .meta {
@@ -315,10 +308,14 @@ const formatCurrency = (value: number | null) => {
 }
 
 .table {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
   border: 1px solid var(--border-strong);
   overflow: hidden;
   border-radius: 6px;
   background: #f4f7fb;
+  min-height: 0;
 }
 
 .table-header,
@@ -330,6 +327,7 @@ const formatCurrency = (value: number | null) => {
 }
 
 .table-header {
+  flex-shrink: 0;
   font-weight: 700;
   background: #dbe6f7;
   border-bottom: 1px solid var(--border-strong);
@@ -337,10 +335,14 @@ const formatCurrency = (value: number | null) => {
 
 .table-body {
   position: relative;
-  height: 70vh;
-  min-height: 420px;
+  flex: 1;
+  min-height: 0;
   overflow: auto;
   background: #e6edf7;
+}
+
+.virtual-list-container {
+  position: relative;
 }
 
 .table-row {
@@ -414,6 +416,10 @@ const formatCurrency = (value: number | null) => {
 }
 
 .virtual-list {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
   will-change: transform;
 }
 
