@@ -71,7 +71,7 @@ watch(
 )
 
 const queryErrorMessage = computed(() => {
-  const err = modelsStore.modelsQuery.error?.value
+  const err = modelsStore.modelsQuery.error
   if (!err) return ''
   if (err instanceof Error) return err.message
   return String(err)
