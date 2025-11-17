@@ -1,0 +1,30 @@
+:root {
+  --app-bg: #ece9d8;
+  --app-text: #111;
+  --window-bg: #ffffff;
+  --border-strong: #7f9db9;
+  --accent: #0054e3;
+  --muted: #4f6b92;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: 'Segoe UI', 'Helvetica Neue', system-ui, -apple-system, sans-serif;
+  background: var(--app-bg);
+  color: var(--app-text);
+}
+
+a {
+  color: var(--accent);
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
