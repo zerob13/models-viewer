@@ -243,15 +243,6 @@ const formatCurrency = (value: number | null) => {
   align-items: center;
 }
 
-.provider-select {
-  height: 24px;
-  border-radius: 3px;
-  border: 1px solid #7f9db9;
-  padding: 0 8px;
-  background: #fff;
-  font-size: 12px;
-}
-
 .bar-actions button {
   min-width: 22px;
   height: 22px;
