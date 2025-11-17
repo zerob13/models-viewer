@@ -296,6 +296,7 @@ const formatCurrency = (value: number | null) => {
 }
 
 .meta {
+  flex-shrink: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -337,7 +338,9 @@ const formatCurrency = (value: number | null) => {
   position: relative;
   flex: 1;
   min-height: 0;
-  overflow: auto;
+  height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
   background: #e6edf7;
 }
 
@@ -346,6 +349,7 @@ const formatCurrency = (value: number | null) => {
 }
 
 .table-row {
+  width: 100%;
   border-bottom: 1px dashed rgba(0, 0, 0, 0.08);
   height: 90px;
   align-items: center;
@@ -419,7 +423,7 @@ const formatCurrency = (value: number | null) => {
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
+  right: 0;
   will-change: transform;
 }
 
