@@ -90,49 +90,48 @@ const formatCurrency = (value: number | null) => {
 
 <template>
   <div class="app-shell">
-    <header class="title-bar hero-bar">
-      <div class="title-bar-text">Models Viewer</div>
-      <div class="search-box">
-        <input v-model="searchTerm" type="search" class="search-input"
-          placeholder="Search by model id or model name..." />
-      </div>
-      <div class="bar-actions">
-        <select v-model="selectedProviderId" class="provider-select" aria-label="Filter by provider">
-          <option value="all">All providers</option>
-          <option v-for="provider in providers" :key="provider.id" :value="provider.id">
-            {{ provider.name }}
-          </option>
-        </select>
-      </div>
-    </header>
-
     <main class="content">
       <div class="window main-window">
-        <div class="title-bar mini-bar">
-          <div class="title-bar-text">Model catalog</div>
-          <div class="title-bar-controls">
-            <button type="button" aria-label="Refresh" @click="modelsStore.modelsQuery.refresh()">
-              <Icon icon="mdi:refresh" width="14" />
-            </button>
-          </div>
+        <div class="title-bar">
+          <div class="title-bar-text">Models Viewer</div>
         </div>
 
         <section class="window-body window-content">
-          <div class="meta">
-            <div class="meta-line">
-              <strong>{{ filteredModels.length }}</strong>
-              / {{ models.length }} models matched
+          <div class="toolbar">
+            <div class="toolbar-left">
+              <div class="search-box">
+                <input v-model="searchTerm" type="search" class="search-input"
+                  placeholder="Search by model id or model name..." />
+              </div>
+              <div class="bar-actions">
+                <select v-model="selectedProviderId" class="provider-select" aria-label="Filter by provider">
+                  <option value="all">All providers</option>
+                  <option v-for="provider in providers" :key="provider.id" :value="provider.id">
+                    {{ provider.name }}
+                  </option>
+                </select>
+                <button type="button" aria-label="Refresh" @click="modelsStore.modelsQuery.refresh()">
+                  <Icon icon="mdi:refresh" width="14" />
+                </button>
+              </div>
             </div>
-            <div class="status" :class="{ danger: modelsStore.modelsQuery.error }">
-              <span v-if="modelsStore.modelsQuery.isPending">Loading latest models…</span>
-              <span v-else-if="modelsStore.modelsQuery.error">
-                {{ queryErrorMessage || '加载失败' }}
-              </span>
-              <span v-else>Up to date</span>
+            <div class="toolbar-right">
+              <div class="meta-line">
+                <strong>{{ filteredModels.length }}</strong>
+                / {{ models.length }} models matched
+              </div>
+              <div class="status" :class="{ danger: modelsStore.modelsQuery.error }">
+                <span v-if="modelsStore.modelsQuery.isPending">Loading latest models…</span>
+                <span v-else-if="modelsStore.modelsQuery.error">
+                  {{ queryErrorMessage || '加载失败' }}
+                </span>
+                <span v-else>Up to date</span>
+              </div>
             </div>
           </div>
 
-          <div class="table">
+          <div class="table-wrapper">
+            <div class="table">
             <div class="table-header">
               <div class="cell provider">Provider</div>
               <div class="cell id">Model ID</div>
@@ -205,6 +204,7 @@ const formatCurrency = (value: number | null) => {
                 No models match this search. Try a different id or name.
               </div>
             </div>
+            </div>
           </div>
         </section>
       </div>
@@ -217,39 +217,23 @@ const formatCurrency = (value: number | null) => {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  gap: 12px;
   padding: 16px;
   max-width: 1280px;
   margin: 0 auto;
 }
 
-.hero-bar {
-  position: sticky;
-  top: 0;
-  z-index: 20;
-  display: grid;
-  grid-template-columns: 180px 1fr 240px;
-  gap: 14px;
-  align-items: center;
-  padding: 18px 20px;
-  min-height: 90px;
-  background: var(--window-bg);
-  border: 1px solid var(--border-strong);
-  box-shadow:
-    inset 0 1px 0 #fff,
-    0 6px 12px rgba(0, 0, 0, 0.12);
-}
-
 .search-box {
-  width: 100%;
+  flex: 1;
+  min-width: 0;
+  max-width: 400px;
 }
 
 .search-input {
   width: 100%;
-  padding: 10px 12px;
-  font-size: 15px;
+  padding: 6px 10px;
+  font-size: 13px;
   border: 1px solid #7f9db9;
-  border-radius: 6px;
+  border-radius: 3px;
   background: #fff;
 }
 
@@ -260,11 +244,21 @@ const formatCurrency = (value: number | null) => {
 }
 
 .provider-select {
-  height: 38px;
-  border-radius: 6px;
+  height: 24px;
+  border-radius: 3px;
   border: 1px solid #7f9db9;
-  padding: 0 10px;
+  padding: 0 8px;
   background: #fff;
+  font-size: 12px;
+}
+
+.bar-actions button {
+  min-width: 22px;
+  height: 22px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .content {
@@ -280,12 +274,6 @@ const formatCurrency = (value: number | null) => {
   box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.12);
 }
 
-.mini-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
 .window-content {
   flex: 1;
   display: flex;
@@ -293,19 +281,50 @@ const formatCurrency = (value: number | null) => {
   background: var(--window-bg);
   color: var(--app-text);
   overflow: hidden;
+  min-height: 0;
 }
 
-.meta {
+.toolbar {
   flex-shrink: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  gap: 12px;
+  padding: 12px;
+  border-bottom: 1px solid var(--border-strong);
+  background: #f0f4f8;
+}
+
+.toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.meta-line {
   color: var(--muted);
+  font-size: 13px;
 }
 
 .status.danger {
   color: #d32f2f;
+}
+
+.table-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  margin-top: 12px;
 }
 
 .table {
