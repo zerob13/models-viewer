@@ -6,7 +6,6 @@ import 'xp.css/dist/XP.css'
 import './style.css'
 import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
 
-
 const app = createApp(App)
 
 const pinia = createPinia()
